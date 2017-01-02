@@ -1,0 +1,13 @@
+{
+	"repetitions": 10,
+	"benchmark": {
+		"json": [
+			{
+				"name": "Jackson",
+				"class": "vanura.jan.benchmark.java.units.json.Jaxen",
+				"url": "https://github.com/FasterXML/jackson",
+				"version": "2.8.5"
+			}
+		]
+	}
+}
