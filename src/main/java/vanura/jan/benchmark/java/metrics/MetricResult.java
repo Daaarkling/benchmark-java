@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package vanura.jan.benchmark.java.units;
+package vanura.jan.benchmark.java.metrics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Jan
  */
-public class UnitResult {
+public class MetricResult {
 	
 	private String name;
 	private int size;

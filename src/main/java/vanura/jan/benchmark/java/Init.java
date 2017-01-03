@@ -8,7 +8,6 @@ package vanura.jan.benchmark.java;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.io.IOException;
-import vanura.jan.benchmark.java.converters.EntityConvertor;
 import vanura.jan.benchmark.java.utils.ConfigValidator;
 import vanura.jan.benchmark.java.utils.JsonLoader;
 
@@ -23,7 +22,8 @@ public class Init {
 		JsonNode configNode = JsonLoader.loadResource(Config.configPath);
 		File testDataFile = new File(Config.testDataPath);
 		
-		Config config = new Config(configNode, testDataFile);
+		//Config config = new Config(configNode, testDataFile, 100, Config.Mode.OUTER);
+		Config config = new Config(configNode, testDataFile, 10, Config.Mode.INNER);
 		
 		
 		ConfigValidator configValidator = new ConfigValidator(config);
@@ -39,8 +39,9 @@ public class Init {
 		
 		// Validation is OK
 		
-//		Benchmark benchmark = new DumpBenchmark(config, new EntityConvertor());
-		Benchmark benchmark = new BenchmarkCsvOutput(config, new EntityConvertor());
+		//Benchmark benchmark = new BenchmarkDumpOutput(config);
+		Benchmark benchmark = new BenchmarkCsvOutput(config);
+		//Benchmark benchmark = new BenchmarkConsoleOutput(config);
 		benchmark.run();
 	}
 	

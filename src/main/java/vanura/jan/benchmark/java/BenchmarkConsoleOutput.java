@@ -26,6 +26,14 @@
 package vanura.jan.benchmark.java;
 
 import com.opencsv.CSVWriter;
+import de.vandermeer.asciitable.v2.RenderedTable;
+import de.vandermeer.asciitable.v2.V2_AsciiTable;
+import de.vandermeer.asciitable.v2.render.V2_AsciiTableRenderer;
+import de.vandermeer.asciitable.v2.render.WidthLongestLine;
+import de.vandermeer.asciitable.v2.render.WidthLongestWord;
+import de.vandermeer.asciitable.v2.row.ContentRow;
+import de.vandermeer.asciitable.v2.row.V2_Row;
+import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -43,13 +51,12 @@ import vanura.jan.benchmark.java.utils.Formatters;
  *
  * @author Jan
  */
-public class BenchmarkCsvOutput extends Benchmark {
+public class BenchmarkConsoleOutput extends Benchmark {
 
-	public static String fileName = "java-output";
 	public static String timeFormat = "yyyy-MM-dd-HH-mm-ss";
 	
 	
-	public BenchmarkCsvOutput(Config config) {
+	public BenchmarkConsoleOutput(Config config) {
 		super(config);
 	}
 
@@ -60,16 +67,18 @@ public class BenchmarkCsvOutput extends Benchmark {
 		List<String> headersEncode = new ArrayList<>();		
 		List<String> headersDecode = new ArrayList<>();
 		
-		List<List<Long>> rowsEncode = new ArrayList<>();
-		List<List<Long>> rowsDecode = new ArrayList<>();
+		List<List<String>> rowsEncode = new ArrayList<>();
+		List<List<String>> rowsDecode = new ArrayList<>();
 		
-		List<Long> rowSize = new ArrayList<>();
+		List<String> rowEncodeMean = new ArrayList<>();
+		List<String> rowDecodeMean = new ArrayList<>();
+		List<String> rowSize = new ArrayList<>();
 		
 		int count = config.getMode() == Config.Mode.INNER ? config.getRepetitions() : 1;
 		
 		for (int i = 0; i < count; i++) {
-			List<Long> rowEncode = new ArrayList<>();
-			List<Long> rowDecode = new ArrayList<>();
+			List<String> rowEncode = new ArrayList<>();
+			List<String> rowDecode = new ArrayList<>();
 			Iterator it = result.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry)it.next();
@@ -77,6 +86,8 @@ public class BenchmarkCsvOutput extends Benchmark {
 				List<MetricResult> unitResults = (List<MetricResult>) pair.getValue();
 				for (MetricResult unitResult : unitResults) {
 					if (i == 0){
+						
+						// headers
 						if (unitResult.hasEncode()) {
 							headersEncode.add(pair.getKey() + " - " + unitResult.getName());
 						}
@@ -84,33 +95,39 @@ public class BenchmarkCsvOutput extends Benchmark {
 							headersDecode.add(pair.getKey() + " - " + unitResult.getName());
 						}
 						
+						// means
+						if(count > 1) {
+							rowEncodeMean.add(Formatters.seconds(unitResult.getMeanEncode()));
+							rowDecodeMean.add(Formatters.seconds(unitResult.getMeanDecode()));
+						}
+						
 						// sizes
-						rowSize.add(Long.valueOf(unitResult.getSize()));
+						rowSize.add(Formatters.bytes(unitResult.getSize()));
 					}
 					
+					// times
 					int sizeEncode = unitResult.getTimeEncode().size();
 					if (sizeEncode > 0 && i < sizeEncode){
-						rowEncode.add(unitResult.getTimeEncode().get(i));
+						rowEncode.add(Formatters.seconds(unitResult.getTimeEncode().get(i)));
 					}
 					int sizeDecode = unitResult.getTimeDecode().size();
 					if (sizeDecode > 0 && i < sizeDecode) {
-						rowDecode.add(unitResult.getTimeDecode().get(i));
+						rowDecode.add(Formatters.seconds(unitResult.getTimeDecode().get(i)));
 					}
 				}
 			}
 			rowsEncode.add(rowEncode);
 			rowsDecode.add(rowDecode);
 		}
-		rowsEncode.add(rowSize);
-		
+
 		LocalDateTime dateTime = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
 		
-		String nameEncode = "output/" + fileName + "-encode-" + dateTime.format(formatter) + ".csv";
-		writeCsv(nameEncode, headersEncode, rowsEncode);
+		String nameEncode = "Encode - " + dateTime.format(formatter);
+		printTable(nameEncode, headersEncode, rowsEncode, rowEncodeMean, rowSize);
 		
-		String nameDecode = "output/" + fileName + "-decode-" + dateTime.format(formatter) + ".csv";
-		writeCsv(nameDecode, headersDecode, rowsDecode);
+		String nameDecode = "Decode - " + dateTime.format(formatter);
+		printTable(nameDecode, headersDecode, rowsDecode, rowDecodeMean, new ArrayList<>());
 		
 		System.out.println("Succes");
 		
@@ -118,25 +135,45 @@ public class BenchmarkCsvOutput extends Benchmark {
 	}
 	
 	
-	private void writeCsv(String name, List<String> headers, List<List<Long>> rows) {
+	private void printTable(String name, List<String> headers, List<List<String>> times, List<String> means, List<String> sizes) {
 		
-		try {
-			CSVWriter writer = new CSVWriter(new FileWriter(name), ';');
-			String[] entries = new String[headers.size()];
-			headers.toArray(entries);
-			writer.writeNext(entries);
-			
-			for (List<Long> row :rows) {
-				entries = new String[row.size()];
-				for (int i = 0; i < row.size(); i++) {
-					entries[i] = String.valueOf(row.get(i));
-				}
-				writer.writeNext(entries);
+
+		V2_AsciiTable table = new V2_AsciiTable();
+		
+		table.addRow(headers.toArray());
+		table.addStrongRule();
+
+		Iterator<List<String>> timesIterator = times.iterator();
+		while(timesIterator.hasNext()) {
+			table.addRow(timesIterator.next().toArray());
+			if(timesIterator.hasNext()){
+				table.addRule();
 			}
-			writer.close();
-		} catch (IOException ex) {
-			Logger.getLogger(BenchmarkCsvOutput.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		
+		if (!means.isEmpty()) {
+			table.addStrongRule();
+			table.addRow(means.toArray());
+		}
+		
+		if(!sizes.isEmpty()) {
+			table.addStrongRule();
+			table.addRow(sizes.toArray());
+		}
+		
+		V2_AsciiTableRenderer renderer = new V2_AsciiTableRenderer();
+		renderer.setTheme(V2_E_TableThemes.PLAIN_7BIT_STRONG.get());
+//		renderer.setTheme(V2_E_TableThemes.UTF_DOUBLE.get());
+		renderer.setWidth(new WidthLongestLine());
+
+		RenderedTable renderedTable = renderer.render(table);
+		
+		System.out.println("");
+		System.out.println("");
+		System.out.println(name);
+		System.out.println("");
+		System.out.println(renderedTable);	
+		System.out.println("");
 	}
 	
 	

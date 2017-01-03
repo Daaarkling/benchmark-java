@@ -3,22 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vanura.jan.benchmark.java.units.json;
+package vanura.jan.benchmark.java.metrics.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import vanura.jan.benchmark.java.entities.PersonCollection;
-import vanura.jan.benchmark.java.units.AUnitBenchmark;
-import vanura.jan.benchmark.java.units.IUnitBenchmark;
+import vanura.jan.benchmark.java.metrics.AMetric;
 
 /**
  *
  * @author Jan
  */
-public class Jaxen extends AUnitBenchmark implements IUnitBenchmark {
+public class JaxenMetric extends AMetric {
 	
 	private ObjectMapper mapper;
 
@@ -31,25 +32,25 @@ public class Jaxen extends AUnitBenchmark implements IUnitBenchmark {
 	
 	
 	@Override
-	public String encode(Object data) {
+	public boolean encode(Object data, OutputStream output) {
 		
 		try {
-			return mapper.writeValueAsString(data);
-		} catch (JsonProcessingException ex) {
-			Logger.getLogger(Jaxen.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
+			mapper.writeValue(output, data);
+			return true;
+		} catch (IOException ex) {
+			Logger.getLogger(JaxenMetric.class.getName()).log(Level.SEVERE, null, ex);
+			return false;
 		}
 	}
 
 	@Override
-	public boolean decode(Object data) {
+	public Object decode(InputStream input) {
 		
 		try {
-			mapper.readValue((String) data, PersonCollection.class);
-			return true;
+			return mapper.readValue(input, PersonCollection.class);
 		} catch (IOException ex) {
-			Logger.getLogger(Jaxen.class.getName()).log(Level.SEVERE, null, ex);
-			return false;
+			Logger.getLogger(JaxenMetric.class.getName()).log(Level.SEVERE, null, ex);
+			return null;
 		}
 	}
 }

@@ -23,50 +23,61 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package vanura.jan.benchmark.java;
+package vanura.jan.benchmark.java.metrics.msgpack;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import vanura.jan.benchmark.java.converters.IDataConvertor;
-import vanura.jan.benchmark.java.metrics.MetricResult;
-import vanura.jan.benchmark.java.utils.Formatters;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.msgpack.jackson.dataformat.MessagePackFactory;
+import vanura.jan.benchmark.java.entities.PersonCollection;
+import vanura.jan.benchmark.java.metrics.AMetric;
 
 /**
  *
  * @author Jan
  */
-public class BenchmarkDumpOutput extends Benchmark {
+public class MsgPackMetric extends AMetric {
+	
+	private ObjectMapper objectMapper;
 
-	public BenchmarkDumpOutput(Config config) {
-		super(config);
+	
+	
+	@Override
+	protected void prepareBenchmark() {
+		objectMapper = new ObjectMapper(new MessagePackFactory());
+	}
+
+		
+	@Override
+	public boolean encode(Object data, OutputStream output) {
+		
+		try {
+			objectMapper.writeValue(output, data);
+			return true;
+		} catch (IOException ex) {
+			Logger.getLogger(MsgPackMetric.class.getName()).log(Level.SEVERE, null, ex);
+			return false;
+		}
+		
+		
+	}
+	
+	
+	@Override
+	public Object decode(InputStream input) {
+		
+		try {
+			return objectMapper.readValue(input, PersonCollection.class);
+		} catch (IOException ex) {
+			Logger.getLogger(MsgPackMetric.class.getName()).log(Level.SEVERE, null, ex);
+			return null;
+		}
 	}
 
 	
-	@Override
-	protected void handleResult(Map<String, List<MetricResult>> result) {
-		
-		Iterator it = result.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry)it.next();
-			System.out.println(pair.getKey() + ":");
-			it.remove(); // avoids a ConcurrentModificationException
-			
-			List<MetricResult> unitResults = (List<MetricResult>) pair.getValue();
-			for (MetricResult unitResult : unitResults) {
-				System.out.println(unitResult.getName() + ":");
-				System.out.println("Encode time:");
-				for (Long time : unitResult.getTimeEncode()){
-					System.out.println(Formatters.seconds(time));
-				}
-				System.out.println("Size: " + Formatters.bytes(unitResult.getSize()));
-				System.out.println("Decode time:");
-				for (Long time : unitResult.getTimeDecode()){
-					System.out.println(Formatters.seconds(time));
-				}
-			}
-		}
-	}
 	
 	
 }

@@ -1,10 +1,11 @@
 
 package vanura.jan.benchmark.java.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonCollection {
+public class PersonCollection implements Serializable {
     
 	private List<Person> persons = new ArrayList<>();
 

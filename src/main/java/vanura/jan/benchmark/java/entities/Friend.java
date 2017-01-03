@@ -1,6 +1,8 @@
 package vanura.jan.benchmark.java.entities;
 
-public class Friend  {
+import java.io.Serializable;
+
+public class Friend implements Serializable {
     
 	private int id;
     private String name;

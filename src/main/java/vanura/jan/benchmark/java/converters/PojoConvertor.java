@@ -11,7 +11,7 @@ import vanura.jan.benchmark.java.entities.PersonCollection;
  *
  * @author Jan
  */
-public class EntityConvertor implements IDataConvertor {
+public class PojoConvertor implements IDataConvertor {
 	
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class EntityConvertor implements IDataConvertor {
 			PersonCollection collection = mapper.readValue(testDataFile, PersonCollection.class);
 			return collection;
 		} catch (IOException ex) {
-			Logger.getLogger(EntityConvertor.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(PojoConvertor.class.getName()).log(Level.SEVERE, null, ex);
 			return null;
 		}
 	}

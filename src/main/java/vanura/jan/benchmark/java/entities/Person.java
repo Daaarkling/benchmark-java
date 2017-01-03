@@ -1,12 +1,13 @@
 
 package vanura.jan.benchmark.java.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class Person {
+public class Person implements Serializable {
     private String _id;
     private int index;
     private String guid;

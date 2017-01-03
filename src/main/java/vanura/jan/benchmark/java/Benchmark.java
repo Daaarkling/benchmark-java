@@ -14,8 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import vanura.jan.benchmark.java.converters.IDataConvertor;
-import vanura.jan.benchmark.java.units.IUnitBenchmark;
-import vanura.jan.benchmark.java.units.UnitResult;
+import vanura.jan.benchmark.java.converters.PojoConvertor;
+import vanura.jan.benchmark.java.metrics.IMetric;
+import vanura.jan.benchmark.java.metrics.MetricResult;
 import vanura.jan.benchmark.java.utils.ClassHelper;
 
 /**
@@ -25,14 +26,12 @@ import vanura.jan.benchmark.java.utils.ClassHelper;
 public abstract class Benchmark {
 	
 	protected Config config;
-	protected IDataConvertor convertor;
 
 	
 	
-	public Benchmark(Config config, IDataConvertor convertor) {
+	public Benchmark(Config config) {
 		
 		this.config = config;
-		this.convertor = convertor;
 	}
 	
 	/**
@@ -40,21 +39,25 @@ public abstract class Benchmark {
 	 */
 	public void run() {
 		
-		Map<String, List<UnitResult>> result = new HashMap<>();
+		Map<String, List<MetricResult>> result = new HashMap<>();
 		Object data = prepareData();
 		JsonNode configNode = config.getConfigNode();
 		
 		Iterator<Map.Entry<String, JsonNode>> formatsNode = configNode.path("benchmark").fields();
 		while (formatsNode.hasNext()) {
 			Map.Entry<String, JsonNode> formatNode = (Map.Entry<String, JsonNode>) formatsNode.next();
-			List<UnitResult> unitResults = new ArrayList<>();
+			List<MetricResult> unitResults = new ArrayList<>();
 			for (JsonNode lib : formatNode.getValue()) {
 				
 				String className = lib.path("class").asText();
-				IUnitBenchmark classUnit = (IUnitBenchmark) ClassHelper.instantiateClass(className, IUnitBenchmark.class);
+				IMetric classUnit = (IMetric) ClassHelper.instantiateClass(className, IMetric.class);
 				
 				// run unit benchmark
-				UnitResult unitResult = classUnit.run(data, config.getTestData(), config.getRepetitions(), config.getMode());
+				MetricResult unitResult = classUnit.run(data, config.getTestData(), config.getRepetitions(), config.getMode());
+				
+				if (unitResult == null) {
+					continue;
+				}
 				
 				String name = lib.path("name").asText() + " " + lib.path("version").asText();
 				name = name.trim();
@@ -68,11 +71,12 @@ public abstract class Benchmark {
 		handleResult(result);
 	}
 	
-	protected abstract void handleResult(Map<String, List<UnitResult>> result);
+	protected abstract void handleResult(Map<String, List<MetricResult>> result);
 	
 	
 	protected Object prepareData() {
 		File testData = config.getTestData();
+		IDataConvertor convertor = new PojoConvertor();
 		return convertor.convertData(testData);
 	}
 
@@ -83,13 +87,4 @@ public abstract class Benchmark {
 	public void setConfig(Config config) {
 		this.config = config;
 	}
-
-	public IDataConvertor getConvertor() {
-		return convertor;
-	}
-
-	public void setConvertor(IDataConvertor convertor) {
-		this.convertor = convertor;
-	}
-	
 }

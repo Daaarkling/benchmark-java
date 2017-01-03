@@ -3,16 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vanura.jan.benchmark.java.units;
+package vanura.jan.benchmark.java.metrics;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import vanura.jan.benchmark.java.Config;
 
 /**
  *
  * @author Jan
  */
-public interface IUnitBenchmark {
+public interface IMetric {
 	
 	/**
 	 * Method for run the benchmark, should execute encode() and decode() methods and deliver result
@@ -21,11 +23,11 @@ public interface IUnitBenchmark {
 	 * @param testDataFile
 	 * @param repetitions
 	 * @param method 
+	 * @return object that holds results
 	 */
-	public UnitResult run(Object testData, File testDataFile, int repetitions, Config.Mode method);
+	public MetricResult run(Object testData, File testDataFile, int repetitions, Config.Mode method);
 
-	public String encode(Object data);
+	public boolean encode(Object data, OutputStream output);
 
-
-	public boolean decode(Object data);
+	public Object decode(InputStream input);
 }

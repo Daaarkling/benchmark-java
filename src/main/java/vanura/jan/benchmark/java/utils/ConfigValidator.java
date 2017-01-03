@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import vanura.jan.benchmark.java.units.IUnitBenchmark;
+import vanura.jan.benchmark.java.metrics.IMetric;
 
 
 /**
@@ -70,7 +70,7 @@ public class ConfigValidator {
 		for (JsonNode format : configNode.path("benchmark")){
 			for (JsonNode lib : format) {
 				String className = lib.path("class").asText();
-				if (ClassHelper.instantiateClass(className, IUnitBenchmark.class) == null ){
+				if (ClassHelper.instantiateClass(className, IMetric.class) == null ){
 					errors.add("Class " + className + " not found or is not instantiable.");
 				}
 			}

@@ -23,49 +23,44 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package vanura.jan.benchmark.java;
+package vanura.jan.benchmark.java.metrics.xml;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import vanura.jan.benchmark.java.converters.IDataConvertor;
-import vanura.jan.benchmark.java.metrics.MetricResult;
-import vanura.jan.benchmark.java.utils.Formatters;
+import com.thoughtworks.xstream.XStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import vanura.jan.benchmark.java.entities.Friend;
+import vanura.jan.benchmark.java.entities.Person;
+import vanura.jan.benchmark.java.entities.PersonCollection;
+import vanura.jan.benchmark.java.metrics.AMetric;
 
 /**
  *
  * @author Jan
  */
-public class BenchmarkDumpOutput extends Benchmark {
+public class XStreamMetric extends AMetric {
+	
+	private XStream xstream;
 
-	public BenchmarkDumpOutput(Config config) {
-		super(config);
+	@Override
+	protected void prepareBenchmark() {
+		
+		xstream = new XStream();
+		xstream.alias("personCollection", PersonCollection.class);
+		xstream.alias("person", Person.class);
+		xstream.alias("friend", Friend.class);
 	}
 
 	
+	
 	@Override
-	protected void handleResult(Map<String, List<MetricResult>> result) {
-		
-		Iterator it = result.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry)it.next();
-			System.out.println(pair.getKey() + ":");
-			it.remove(); // avoids a ConcurrentModificationException
-			
-			List<MetricResult> unitResults = (List<MetricResult>) pair.getValue();
-			for (MetricResult unitResult : unitResults) {
-				System.out.println(unitResult.getName() + ":");
-				System.out.println("Encode time:");
-				for (Long time : unitResult.getTimeEncode()){
-					System.out.println(Formatters.seconds(time));
-				}
-				System.out.println("Size: " + Formatters.bytes(unitResult.getSize()));
-				System.out.println("Decode time:");
-				for (Long time : unitResult.getTimeDecode()){
-					System.out.println(Formatters.seconds(time));
-				}
-			}
-		}
+	public boolean encode(Object data, OutputStream output) {
+		xstream.toXML(data, output);
+		return true;
+	}
+
+	@Override
+	public Object decode(InputStream input) {
+		return (PersonCollection) xstream.fromXML(input);
 	}
 	
 	

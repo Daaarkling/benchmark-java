@@ -31,13 +31,25 @@ public class JsonLoader {
      */
     public static JsonNode loadResource(final String name) throws IOException {
 		
-		
 		File file = new File(name);
+		return loadResource(file);
+    }
+	
+	
+	/**
+	 * Load one resource from the current package as a {@link JsonNode}
+	 *
+	 * @param file resource
+	 * @return a JSON document
+	 * @throws IOException resource not found
+	 */
+	public static JsonNode loadResource(File file) throws IOException {
+
 		if (!file.isFile()) {
-			throw new IOException("File " + name + " was not found.");
+			throw new IOException("File " + file.getName() + " was not found.");
 		}
 		ObjectMapper mapper = new ObjectMapper();
-        return mapper.readTree(file);
-    }
+		return mapper.readTree(file);
+	}
 	
 }
