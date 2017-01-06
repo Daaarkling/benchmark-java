@@ -1,44 +1,41 @@
 {
-	"repetitions": 10,
-	"benchmark": {
-		"native": [
-			{
-				"name": "JavaSerialization",
-				"class": "vanura.jan.benchmark.java.metrics.jnative.JavaSerialization",
-				"url": "https://docs.oracle.com/javase/tutorial/essential/io/objectstreams.html"
-			}
-		],
-		"json": [
-			{
-				"name": "Jackson",
-				"class": "vanura.jan.benchmark.java.metrics.json.JaxenMetric",
-				"url": "https://github.com/FasterXML/jackson",
-				"version": "2.8.5"
-			}
-		],
-		"xml": [
-			{
-				"name": "XStream",
-				"class": "vanura.jan.benchmark.java.metrics.xml.XStreamMetric",
-				"url": "https://github.com/x-stream/xstream",
-				"version": "1.4.9"
-			}
-		],
-		"msgpack": [
-			{
-				"name": "MsgPack",
-				"class": "vanura.jan.benchmark.java.metrics.msgpack.MsgPackMetric",
-				"url": "https://github.com/msgpack/msgpack-java",
-				"version": "0.8.11"
-			}
-		],
-		"avro": [
-			{
-				"name": "Avro",
-				"class": "vanura.jan.benchmark.java.metrics.avro.AvroMetric",
-				"url": "https://avro.apache.org/",
-				"version": "1.8.1"
-			}
-		]
-	}
+	"native": [
+		{
+			"name": "JavaSerialization",
+			"class": "vanura.jan.benchmark.java.metrics.jnative.JavaSerialization",
+			"url": "https://docs.oracle.com/javase/tutorial/essential/io/objectstreams.html"
+		}
+	],
+	"json": [
+		{
+			"name": "Jackson",
+			"class": "vanura.jan.benchmark.java.metrics.json.JaxenMetric",
+			"url": "https://github.com/FasterXML/jackson",
+			"version": "2.8.5"
+		}
+	],
+	"xml": [
+		{
+			"name": "XStream",
+			"class": "vanura.jan.benchmark.java.metrics.xml.XStreamMetric",
+			"url": "https://github.com/x-stream/xstream",
+			"version": "1.4.9"
+		}
+	],
+	"msgpack": [
+		{
+			"name": "MsgPack",
+			"class": "vanura.jan.benchmark.java.metrics.msgpack.MsgPackMetric",
+			"url": "https://github.com/msgpack/msgpack-java",
+			"version": "0.8.11"
+		}
+	],
+	"avro": [
+		{
+			"name": "Avro",
+			"class": "vanura.jan.benchmark.java.metrics.avro.AvroMetric",
+			"url": "https://avro.apache.org/",
+			"version": "1.8.1"
+		}
+	]
 }

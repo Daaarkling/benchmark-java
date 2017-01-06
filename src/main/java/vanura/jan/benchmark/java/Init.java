@@ -20,10 +20,11 @@ public class Init {
 	public Init() throws IOException {
 		
 		JsonNode configNode = JsonLoader.loadResource(Config.configPath);
-		File testDataFile = new File(Config.testDataPath);
+		File testDataFile = new File(Config.testDataSmallPath);
+		//File testDataFile = new File(Config.testDataBigPath);
 		
-		//Config config = new Config(configNode, testDataFile, 100, Config.Mode.OUTER);
-		Config config = new Config(configNode, testDataFile, 10, Config.Mode.INNER);
+		Config config = new Config(configNode, testDataFile, 1000, Config.Mode.OUTER);
+		//Config config = new Config(configNode, testDataFile, 10, Config.Mode.INNER);
 		
 		
 		ConfigValidator configValidator = new ConfigValidator(config);

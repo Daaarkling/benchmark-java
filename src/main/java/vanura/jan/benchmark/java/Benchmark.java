@@ -43,7 +43,7 @@ public abstract class Benchmark {
 		Object data = prepareData();
 		JsonNode configNode = config.getConfigNode();
 		
-		Iterator<Map.Entry<String, JsonNode>> formatsNode = configNode.path("benchmark").fields();
+		Iterator<Map.Entry<String, JsonNode>> formatsNode = configNode.fields();
 		while (formatsNode.hasNext()) {
 			Map.Entry<String, JsonNode> formatNode = (Map.Entry<String, JsonNode>) formatsNode.next();
 			List<MetricResult> unitResults = new ArrayList<>();

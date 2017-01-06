@@ -67,7 +67,7 @@ public class ConfigValidator {
 	private void validateClasses() {
 		
 		JsonNode configNode = config.getConfigNode();
-		for (JsonNode format : configNode.path("benchmark")){
+		for (JsonNode format : configNode){
 			for (JsonNode lib : format) {
 				String className = lib.path("class").asText();
 				if (ClassHelper.instantiateClass(className, IMetric.class) == null ){
