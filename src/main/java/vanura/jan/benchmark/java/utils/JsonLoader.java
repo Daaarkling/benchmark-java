@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -50,6 +51,14 @@ public class JsonLoader {
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readTree(file);
+	}
+	
+	
+
+	public static JsonNode loadResource(InputStream input) throws IOException {
+
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readTree(input);
 	}
 	
 }

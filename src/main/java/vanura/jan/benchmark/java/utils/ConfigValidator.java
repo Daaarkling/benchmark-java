@@ -12,6 +12,7 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,11 +33,15 @@ public class ConfigValidator {
 		try {
 			this.config = config;
 			errors.clear();
-			JsonNode schema = JsonLoader.loadResource(Config.schemaPath);
+			
+			ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+			InputStream schemaStream = classloader.getResourceAsStream("schema.json");
+
+			JsonNode schema = JsonLoader.loadResource(schemaStream);
 			JsonSchemaFactory factory = new JsonSchemaFactory();
 			validator = factory.getSchema(schema);
 		} catch (IOException ex) {
-			errors.add("Schema file: " + Config.schemaPath + " was not found.");
+			errors.add("Schema file not found.");
 		}
 
 	}

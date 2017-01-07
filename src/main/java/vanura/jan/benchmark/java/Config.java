@@ -39,9 +39,7 @@ public class Config {
 	};
 	
 	public static String configPath = "config/config.json";
-	public static String schemaPath = "config/schema.json";
-	public static String testDataSmallPath = "config/testdata_small.json";
-	public static String testDataBigPath = "config/testdata_big.json";
+	public static String testDataPath = "config/testdata.json";
 	
 	private JsonNode configNode;
 	private File testData;
@@ -91,7 +89,7 @@ public class Config {
 	}
 
 	public void setRepetitions(int repetitions) {
-		if (repetitions > 1) {
+		if (repetitions >= 1) {
 			this.repetitions = repetitions;
 		} else {
 			this.repetitions = 10;

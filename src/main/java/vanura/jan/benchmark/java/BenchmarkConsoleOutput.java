@@ -120,10 +120,6 @@ public class BenchmarkConsoleOutput extends Benchmark {
 		
 		String nameDecode = "Decode - " + dateTime.format(formatter);
 		printTable(nameDecode, headersDecode, rowsDecode, rowDecodeMean, new ArrayList<>());
-		
-		System.out.println("Succes");
-		
-		
 	}
 	
 	
