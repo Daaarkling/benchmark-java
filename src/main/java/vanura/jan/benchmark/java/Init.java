@@ -21,11 +21,11 @@ public class Init {
 		
 		JsonNode configNode = JsonLoader.loadResource(Config.configPath);
 	
-		//File testDataFile = new File(Config.testDataSmallPath);
-		//Config config = new Config(configNode, testDataFile, 1000, Config.Mode.OUTER);
+		File testDataFile = new File(Config.testDataSmallPath);
+		Config config = new Config(configNode, testDataFile, 1000, Config.Mode.OUTER);
 		
-		File testDataFile = new File(Config.testDataBigPath);
-		Config config = new Config(configNode, testDataFile, 10, Config.Mode.INNER);
+		//File testDataFile = new File(Config.testDataBigPath);
+		//Config config = new Config(configNode, testDataFile, 10, Config.Mode.INNER);
 		
 		
 		ConfigValidator configValidator = new ConfigValidator(config);

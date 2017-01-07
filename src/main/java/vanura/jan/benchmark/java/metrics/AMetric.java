@@ -151,6 +151,10 @@ public abstract class AMetric implements IMetric {
 		if (encodeImplemented && output.size() > 0) {
 			result.addTimeEncode(time);
 			result.setSize(output.size());
+			
+			// Decode just one data not multiple data stacked on each other
+			output.reset();
+			encode(dataForEncode, output);
 			dataForDecode = output.toByteArray();
 		} else {
 			dataForDecode = prepareTestDataForDecode();
