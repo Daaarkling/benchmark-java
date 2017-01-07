@@ -20,11 +20,12 @@ public class Init {
 	public Init() throws IOException {
 		
 		JsonNode configNode = JsonLoader.loadResource(Config.configPath);
-		File testDataFile = new File(Config.testDataSmallPath);
-		//File testDataFile = new File(Config.testDataBigPath);
+	
+		//File testDataFile = new File(Config.testDataSmallPath);
+		//Config config = new Config(configNode, testDataFile, 1000, Config.Mode.OUTER);
 		
-		Config config = new Config(configNode, testDataFile, 1000, Config.Mode.OUTER);
-		//Config config = new Config(configNode, testDataFile, 10, Config.Mode.INNER);
+		File testDataFile = new File(Config.testDataBigPath);
+		Config config = new Config(configNode, testDataFile, 10, Config.Mode.INNER);
 		
 		
 		ConfigValidator configValidator = new ConfigValidator(config);
@@ -41,8 +42,8 @@ public class Init {
 		// Validation is OK
 		
 		//Benchmark benchmark = new BenchmarkDumpOutput(config);
-		Benchmark benchmark = new BenchmarkCsvOutput(config);
-		//Benchmark benchmark = new BenchmarkConsoleOutput(config);
+		//Benchmark benchmark = new BenchmarkCsvOutput(config);
+		Benchmark benchmark = new BenchmarkConsoleOutput(config);
 		benchmark.run();
 	}
 	
