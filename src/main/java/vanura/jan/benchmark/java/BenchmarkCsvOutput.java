@@ -26,6 +26,7 @@
 package vanura.jan.benchmark.java;
 
 import com.opencsv.CSVWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -37,7 +38,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import vanura.jan.benchmark.java.metrics.MetricResult;
-import vanura.jan.benchmark.java.utils.Formatters;
 
 /**
  *
@@ -47,10 +47,12 @@ public class BenchmarkCsvOutput extends Benchmark {
 
 	public static String fileName = "java-output";
 	public static String timeFormat = "yyyy-MM-dd-HH-mm-ss";
+	private final String outputDir;
 	
 	
-	public BenchmarkCsvOutput(Config config) {
+	public BenchmarkCsvOutput(Config config, String outputDir) {
 		super(config);
+		this.outputDir = outputDir;
 	}
 
 	
@@ -106,15 +108,11 @@ public class BenchmarkCsvOutput extends Benchmark {
 		LocalDateTime dateTime = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
 		
-		String nameEncode = "output/" + fileName + "-encode-" + dateTime.format(formatter) + ".csv";
+		String nameEncode = outputDir + File.separator + fileName + "-encode-" + dateTime.format(formatter) + ".csv";
 		writeCsv(nameEncode, headersEncode, rowsEncode);
 		
-		String nameDecode = "output/" + fileName + "-decode-" + dateTime.format(formatter) + ".csv";
+		String nameDecode = outputDir + File.separator + fileName + "-decode-" + dateTime.format(formatter) + ".csv";
 		writeCsv(nameDecode, headersDecode, rowsDecode);
-		
-		System.out.println("Succes");
-		
-		
 	}
 	
 	

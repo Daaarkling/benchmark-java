@@ -66,6 +66,16 @@ public class Init {
 					System.exit(1);
 				}
 			}
+			
+			String outputDir = "";
+			if (output.equals(OUTPUT_CSV) && cmd.hasOption("od")) {
+				outputDir = cmd.getOptionValue("od");
+				File outputDirFile = new File(outputDir);
+				if (!outputDirFile.isDirectory() || !outputDirFile.canWrite()) {
+					System.err.println("Output path is not directory or is not writable.");
+					System.exit(1);
+				}
+			}
 
 			int repetitions = 10;
 			if (cmd.hasOption("r")) {
@@ -128,7 +138,7 @@ public class Init {
 					benchmark = new BenchmarkConsoleOutput(config);
 					break;
 				default:
-					benchmark = new BenchmarkCsvOutput(config);
+					benchmark = new BenchmarkCsvOutput(config, outputDir);
 					break;
 			}
 			benchmark.run();
@@ -162,26 +172,34 @@ public class Init {
 				.build();
 		options.addOption(outputOption);
 		
-		Option outputRep = Option.builder("r")
+		Option repOption = Option.builder("r")
 				.hasArg()
 				.argName("repetitions")
 				.desc("Number of repetitions.")
 				.build();
-		options.addOption(outputRep);
+		options.addOption(repOption);
 		
-		Option dataRep = Option.builder("d")
+		Option dataOption = Option.builder("d")
 				.hasArg()
 				.argName("data")
 				.desc("Test data.")
 				.build();
-		options.addOption(dataRep);
+		options.addOption(dataOption);
 		
-		Option configRep = Option.builder("c")
+		Option configOption = Option.builder("c")
 				.hasArg()
 				.argName("config")
 				.desc("Config file.")
 				.build();
-		options.addOption(configRep);
+		options.addOption(configOption);
+		
+		Option outputDirOption = Option.builder("od")
+				.hasArg()
+				.argName("out_dir")
+				.desc("Output directory.")
+				.build();
+		options.addOption(outputDirOption);
+		
 		
 		return options;
 	}
