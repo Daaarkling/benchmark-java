@@ -26,13 +26,14 @@ public class Init {
 	
 	private static final String OUTPUT_CONSOLE = "console";
 	private static final String OUTPUT_CSV = "csv";
+	private static final String OUTPUT_FILE = "file";
 	private static final String OUTPUT_DUMP = "dump";
 	
 	private static final String MODE_OUTER = "outer";
 	private static final String MODE_INNER = "inner";
 
 	private String[] modes = {MODE_OUTER, MODE_INNER};
-	private String[] outputs = {OUTPUT_CONSOLE, OUTPUT_CSV, OUTPUT_DUMP};
+	private String[] outputs = {OUTPUT_CONSOLE, OUTPUT_CSV, OUTPUT_FILE, OUTPUT_DUMP};
 	
 	
 	
@@ -68,7 +69,7 @@ public class Init {
 			}
 			
 			String outputDir = "";
-			if (output.equals(OUTPUT_CSV) && cmd.hasOption("od")) {
+			if ((output.equals(OUTPUT_CSV) || output.equals(OUTPUT_FILE)) && cmd.hasOption("od")) {
 				outputDir = cmd.getOptionValue("od");
 				File outputDirFile = new File(outputDir);
 				if (!outputDirFile.isDirectory() || !outputDirFile.canWrite()) {
@@ -136,6 +137,9 @@ public class Init {
 					break;
 				case OUTPUT_CONSOLE:
 					benchmark = new BenchmarkConsoleOutput(config);
+					break;
+				case OUTPUT_FILE:
+					benchmark = new BenchmarkFileOutput(config, outputDir);
 					break;
 				default:
 					benchmark = new BenchmarkCsvOutput(config, outputDir);

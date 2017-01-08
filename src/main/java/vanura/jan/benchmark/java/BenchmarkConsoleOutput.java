@@ -30,6 +30,8 @@ import de.vandermeer.asciitable.v2.V2_AsciiTable;
 import de.vandermeer.asciitable.v2.render.V2_AsciiTableRenderer;
 import de.vandermeer.asciitable.v2.render.WidthLongestLine;
 import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -46,10 +48,11 @@ import vanura.jan.benchmark.java.utils.Formatters;
 public class BenchmarkConsoleOutput extends Benchmark {
 
 	public static String timeFormat = "yyyy-MM-dd-HH-mm-ss";
-	
+	protected PrintStream printStream;
 	
 	public BenchmarkConsoleOutput(Config config) {
 		super(config);
+		printStream = System.out;
 	}
 
 	
@@ -116,16 +119,17 @@ public class BenchmarkConsoleOutput extends Benchmark {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
 		
 		String nameEncode = "Encode - " + dateTime.format(formatter);
-		printTable(nameEncode, headersEncode, rowsEncode, rowEncodeMean, rowSize);
+		RenderedTable renderedTableEncode = createTable(headersEncode, rowsEncode, rowEncodeMean, rowSize);
+		printTable(nameEncode, renderedTableEncode);
 		
 		String nameDecode = "Decode - " + dateTime.format(formatter);
-		printTable(nameDecode, headersDecode, rowsDecode, rowDecodeMean, new ArrayList<>());
+		RenderedTable renderedTableDecode = createTable(headersDecode, rowsDecode, rowDecodeMean, new ArrayList<>());
+		printTable(nameDecode, renderedTableDecode);
 	}
 	
 	
-	private void printTable(String name, List<String> headers, List<List<String>> times, List<String> means, List<String> sizes) {
+	protected RenderedTable createTable(List<String> headers, List<List<String>> times, List<String> means, List<String> sizes) {
 		
-
 		V2_AsciiTable table = new V2_AsciiTable();
 		
 		table.addRow(headers.toArray());
@@ -153,15 +157,17 @@ public class BenchmarkConsoleOutput extends Benchmark {
 		renderer.setTheme(V2_E_TableThemes.PLAIN_7BIT_STRONG.get());
 		renderer.setWidth(new WidthLongestLine());
 
-		RenderedTable renderedTable = renderer.render(table);
-		
-		System.out.println("");
-		System.out.println("");
-		System.out.println(name);
-		System.out.println("");
-		System.out.println(renderedTable);	
-		System.out.println("");
+		return renderer.render(table);
 	}
 	
 	
+	protected void printTable(String name, RenderedTable renderedTable) {
+		
+		printStream.println("");
+		printStream.println("");
+		printStream.println(name);
+		printStream.println("");
+		printStream.println(renderedTable);
+		printStream.println("");
+	}
 }
