@@ -9,8 +9,14 @@
 	"json": [
 		{
 			"name": "Jackson",
-			"class": "vanura.jan.benchmark.java.metrics.json.JaxenMetric",
+			"class": "vanura.jan.benchmark.java.metrics.json.JacksonMetric",
 			"url": "https://github.com/FasterXML/jackson",
+			"version": "2.8.5"
+		},
+		{
+			"name": "JacksonAfterburner",
+			"class": "vanura.jan.benchmark.java.metrics.json.JacksonAfterburnerMetric",
+			"url": "https://github.com/FasterXML/jackson-modules-base/tree/master/afterburner",
 			"version": "2.8.5"
 		},
 		{
@@ -18,6 +24,36 @@
 			"class": "vanura.jan.benchmark.java.metrics.json.GsonMetric",
 			"url": "https://github.com/google/gson",
 			"version": "2.8.0"
+		},
+		{
+			"name": "Json-io",
+			"class": "vanura.jan.benchmark.java.metrics.json.JsonIOMetric",
+			"url": "https://github.com/jdereg/json-io",
+			"version": "4.9.5"
+		},
+		{
+			"name": "Fastjson",
+			"class": "vanura.jan.benchmark.java.metrics.json.FastjsonMetric",
+			"url": "https://github.com/alibaba/fastjson",
+			"version": "1.2.23"
+		},
+		{
+			"name": "Johnzon",
+			"class": "vanura.jan.benchmark.java.metrics.json.JohnzonMetric",
+			"url": "http://johnzon.apache.org/",
+			"version": "1.0.0"
+		},
+		{
+			"name": "LoganSquare",
+			"class": "vanura.jan.benchmark.java.metrics.json.LoganSquareMetric",
+			"url": "https://github.com/bluelinelabs/LoganSquare",
+			"version": "1.3.7"
+		},
+		{
+			"name": "dsl-json",
+			"class": "vanura.jan.benchmark.java.metrics.json.DslJsonMetric",
+			"url": "https://github.com/ngs-doo/dsl-json",
+			"version": "1.3.3"
 		}
 	],
 	"xml": [

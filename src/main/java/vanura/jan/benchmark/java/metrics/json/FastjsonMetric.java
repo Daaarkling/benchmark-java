@@ -5,8 +5,8 @@
  */
 package vanura.jan.benchmark.java.metrics.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,38 +19,32 @@ import vanura.jan.benchmark.java.metrics.AMetric;
  *
  * @author Jan
  */
-public class JaxenMetric extends AMetric {
+public class FastjsonMetric extends AMetric {
 	
-	private ObjectMapper mapper;
 
-	@Override
-	protected void prepareBenchmark() {
-		mapper = new ObjectMapper();
-	}
-
-	
 	
 	
 	@Override
 	public boolean encode(Object data, OutputStream output) {
 		
 		try {
-			mapper.writeValue(output, data);
+			JSON.writeJSONString(output, data, SerializerFeature.EMPTY);
 			return true;
 		} catch (IOException ex) {
-			Logger.getLogger(JaxenMetric.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(FastjsonMetric.class.getName()).log(Level.SEVERE, null, ex);
 			return false;
 		}
 	}
 
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 		
 		try {
-			return mapper.readValue(input, PersonCollection.class);
+			PersonCollection personCollection = JSON.parseObject(input, PersonCollection.class);
+			return personCollection;
 		} catch (IOException ex) {
-			Logger.getLogger(JaxenMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
+			Logger.getLogger(FastjsonMetric.class.getName()).log(Level.SEVERE, null, ex);
+			return false;
 		}
 	}
 }

@@ -67,7 +67,7 @@ public class MsgPackMetric extends AMetric {
 	
 	
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 		
 		try {
 			return objectMapper.readValue(input, PersonCollection.class);

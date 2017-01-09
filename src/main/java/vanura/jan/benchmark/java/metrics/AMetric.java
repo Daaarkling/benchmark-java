@@ -107,11 +107,11 @@ public abstract class AMetric implements IMetric {
 		
 		// DECODE
 		// Do it once to warm up.
-		decode(new ByteArrayInputStream(dataForDecode));
+		decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
 		
 		for (int i = 1; i <= repetitions; i++) {
 			start = System.nanoTime();
-			decodeImplemented = decode(new ByteArrayInputStream(dataForDecode));
+			decodeImplemented = decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
 			time = System.nanoTime() - start;
 
 			if (decodeImplemented == null) {
@@ -167,11 +167,11 @@ public abstract class AMetric implements IMetric {
 
 		// DECODE
 		// Do it once to warm up.
-		decode(new ByteArrayInputStream(dataForDecode));
+		decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
 		
 		start = System.nanoTime();
 		for (int i = 1; i <= repetitions; i++) {
-			decodeImplemented = decode(new ByteArrayInputStream(dataForDecode));
+			decodeImplemented = decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
 		}
 		time = System.nanoTime() - start;
 		
@@ -195,7 +195,7 @@ public abstract class AMetric implements IMetric {
 	}
 
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 		return null;
 	}
 	

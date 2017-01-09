@@ -88,7 +88,7 @@ public class AvroMetric extends AMetric {
 
 	
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 
 		try {
 			DataFileStream<PersonCollection> dataReader = new DataFileStream<>(input, datumReader);

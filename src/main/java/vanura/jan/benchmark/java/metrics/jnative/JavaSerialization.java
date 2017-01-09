@@ -58,7 +58,7 @@ public class JavaSerialization extends AMetric {
 	}
 	
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 		try {
 			ObjectInputStream inputStream = new ObjectInputStream(input);
 			return inputStream.readObject();

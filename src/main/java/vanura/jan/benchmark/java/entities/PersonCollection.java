@@ -1,10 +1,15 @@
 
 package vanura.jan.benchmark.java.entities;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.annotation.JsonObject.FieldDetectionPolicy;
+import com.dslplatform.json.CompiledJson;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@CompiledJson
+@JsonObject(fieldDetectionPolicy = FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class PersonCollection implements Serializable {
     
 	private List<Person> persons = new ArrayList<>();

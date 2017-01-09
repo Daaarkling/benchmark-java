@@ -70,7 +70,7 @@ public class GsonMetric extends AMetric {
 
 	
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 		try {
 			JsonReader reader = new JsonReader(new InputStreamReader(input));
 			PersonCollection pC = gson.fromJson(reader, PersonCollection.class);

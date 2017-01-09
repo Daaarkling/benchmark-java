@@ -29,5 +29,5 @@ public interface IMetric {
 
 	public boolean encode(Object data, OutputStream output);
 
-	public Object decode(InputStream input);
+	public Object decode(InputStream input, byte[] bytes);
 }

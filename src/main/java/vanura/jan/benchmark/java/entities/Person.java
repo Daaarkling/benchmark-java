@@ -1,12 +1,14 @@
 
 package vanura.jan.benchmark.java.entities;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.dslplatform.json.CompiledJson;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+@CompiledJson
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class Person implements Serializable {
     private String _id;
     private int index;

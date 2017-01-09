@@ -59,7 +59,7 @@ public class XStreamMetric extends AMetric {
 	}
 
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 		return (PersonCollection) xstream.fromXML(input);
 	}
 	

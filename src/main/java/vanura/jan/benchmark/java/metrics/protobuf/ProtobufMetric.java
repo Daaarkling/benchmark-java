@@ -66,7 +66,7 @@ public class ProtobufMetric extends AMetric {
 	
 	
 	@Override
-	public Object decode(InputStream input) {
+	public Object decode(InputStream input, byte[] bytes) {
 		
 		try {
 			PersonCollectionOuterClass.PersonCollection personCollection = PersonCollectionOuterClass.PersonCollection.parseFrom(input);
