@@ -31,10 +31,10 @@ import de.vandermeer.asciitable.v2.render.V2_AsciiTableRenderer;
 import de.vandermeer.asciitable.v2.render.WidthLongestLine;
 import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,29 +59,67 @@ public class BenchmarkConsoleOutput extends Benchmark {
 	@Override
 	protected void handleResult(Map<String, List<MetricResult>> result) {
 		
-		List<String> headersEncode = new ArrayList<>();		
-		List<String> headersDecode = new ArrayList<>();
+		if(config.getMode() == Config.Mode.INNER) {
+			transformDataInner(result);
+		} else {
+			transformDataOuter(result);
+		}
 		
+		
+	}
+	
+	protected void transformDataOuter(Map<String, List<MetricResult>> result) {
+		
+		List<String> headers = Arrays.asList(new String[]{"Name", "Time - encode", "Time - decode", "Size"});
+		List<List<String>> rows = new ArrayList<>();
+
+		Iterator it = result.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			List<MetricResult> unitResults = (List<MetricResult>) pair.getValue();
+			for (MetricResult unitResult : unitResults) {
+				List<String> row = new ArrayList<>();
+				row.add(pair.getKey() + " - " + unitResult.getName());
+				row.add(unitResult.hasEncode() ? Formatters.seconds(unitResult.getTimeEncode().get(0)) : "---");
+				row.add(unitResult.hasDecode() ? Formatters.seconds(unitResult.getTimeDecode().get(0)) : "---");
+				row.add(unitResult.hasEncode() ? Formatters.bytes(unitResult.getSize()) : "---");
+				rows.add(row);
+			}
+		}
+		
+		LocalDateTime dateTime = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
+		String name = dateTime.format(formatter);
+		
+		RenderedTable renderedTableEncode = createTable(headers, rows);
+		printTable(name, renderedTableEncode);
+	}
+	
+	
+	protected void transformDataInner(Map<String, List<MetricResult>> result) {
+		
+		List<String> headersEncode = new ArrayList<>();
+		List<String> headersDecode = new ArrayList<>();
+
 		List<List<String>> rowsEncode = new ArrayList<>();
 		List<List<String>> rowsDecode = new ArrayList<>();
-		
+
 		List<String> rowEncodeMean = new ArrayList<>();
 		List<String> rowDecodeMean = new ArrayList<>();
 		List<String> rowSize = new ArrayList<>();
-		
-		int count = config.getMode() == Config.Mode.INNER ? config.getRepetitions() : 1;
-		
+
+		int count = config.getRepetitions();
 		for (int i = 0; i < count; i++) {
 			List<String> rowEncode = new ArrayList<>();
 			List<String> rowDecode = new ArrayList<>();
 			Iterator it = result.entrySet().iterator();
 			while (it.hasNext()) {
-				Map.Entry pair = (Map.Entry)it.next();
+				Map.Entry pair = (Map.Entry) it.next();
 				// it.remove(); // avoids a ConcurrentModificationException
 				List<MetricResult> unitResults = (List<MetricResult>) pair.getValue();
 				for (MetricResult unitResult : unitResults) {
-					if (i == 0){
-						
+					if (i == 0) {
+
 						// headers
 						if (unitResult.hasEncode()) {
 							headersEncode.add(pair.getKey() + " - " + unitResult.getName());
@@ -89,20 +127,20 @@ public class BenchmarkConsoleOutput extends Benchmark {
 						if (unitResult.hasDecode()) {
 							headersDecode.add(pair.getKey() + " - " + unitResult.getName());
 						}
-						
+
 						// means
-						if(count > 1) {
+						if (count > 1) {
 							rowEncodeMean.add(Formatters.seconds(unitResult.getMeanEncode()));
 							rowDecodeMean.add(Formatters.seconds(unitResult.getMeanDecode()));
 						}
-						
+
 						// sizes
 						rowSize.add(Formatters.bytes(unitResult.getSize()));
 					}
-					
+
 					// times
 					int sizeEncode = unitResult.getTimeEncode().size();
-					if (sizeEncode > 0 && i < sizeEncode){
+					if (sizeEncode > 0 && i < sizeEncode) {
 						rowEncode.add(Formatters.seconds(unitResult.getTimeEncode().get(i)));
 					}
 					int sizeDecode = unitResult.getTimeDecode().size();
@@ -117,15 +155,28 @@ public class BenchmarkConsoleOutput extends Benchmark {
 
 		LocalDateTime dateTime = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
-		
+
 		String nameEncode = "Encode - " + dateTime.format(formatter);
 		RenderedTable renderedTableEncode = createTable(headersEncode, rowsEncode, rowEncodeMean, rowSize);
 		printTable(nameEncode, renderedTableEncode);
-		
+
 		String nameDecode = "Decode - " + dateTime.format(formatter);
 		RenderedTable renderedTableDecode = createTable(headersDecode, rowsDecode, rowDecodeMean, new ArrayList<>());
 		printTable(nameDecode, renderedTableDecode);
 	}
+	
+	
+	
+	protected RenderedTable createTable(List<String> headers, List<List<String>> times) {
+		return createTable(headers, times, null, null);
+	}
+	
+	
+	
+	protected RenderedTable createTable(List<String> headers, List<List<String>> times, List<String> means) {
+		return createTable(headers, times, means, null);
+	}
+	
 	
 	
 	protected RenderedTable createTable(List<String> headers, List<List<String>> times, List<String> means, List<String> sizes) {
@@ -143,12 +194,12 @@ public class BenchmarkConsoleOutput extends Benchmark {
 			}
 		}
 		
-		if (!means.isEmpty()) {
+		if (means != null && !means.isEmpty()) {
 			table.addStrongRule();
 			table.addRow(means.toArray());
 		}
 		
-		if(!sizes.isEmpty()) {
+		if(sizes != null && !sizes.isEmpty()) {
 			table.addStrongRule();
 			table.addRow(sizes.toArray());
 		}
@@ -170,4 +221,6 @@ public class BenchmarkConsoleOutput extends Benchmark {
 		printStream.println(renderedTable);
 		printStream.println("");
 	}
+
+	
 }
