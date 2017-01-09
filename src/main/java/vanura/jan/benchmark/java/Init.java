@@ -68,7 +68,7 @@ public class Init {
 				}
 			}
 			
-			String outputDir = "";
+			String outputDir = ".";
 			if ((output.equals(OUTPUT_CSV) || output.equals(OUTPUT_FILE)) && cmd.hasOption("od")) {
 				outputDir = cmd.getOptionValue("od");
 				File outputDirFile = new File(outputDir);
