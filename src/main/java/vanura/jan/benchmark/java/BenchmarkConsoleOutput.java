@@ -115,37 +115,26 @@ public class BenchmarkConsoleOutput extends Benchmark {
 			Iterator it = result.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry) it.next();
-				// it.remove(); // avoids a ConcurrentModificationException
-				List<MetricResult> unitResults = (List<MetricResult>) pair.getValue();
-				for (MetricResult unitResult : unitResults) {
+				List<MetricResult> metricResults = (List<MetricResult>) pair.getValue();
+				for (MetricResult metricResult : metricResults) {
 					if (i == 0) {
-
-						// headers
-						if (unitResult.hasEncode()) {
-							headersEncode.add(pair.getKey() + " - " + unitResult.getName());
+						if (metricResult.hasEncode()) {
+							headersEncode.add(pair.getKey() + " - " + metricResult.getName());
+							rowEncodeMean.add(Formatters.seconds(metricResult.getMeanEncode()));
+							rowSize.add(Formatters.bytes(metricResult.getSize()));
 						}
-						if (unitResult.hasDecode()) {
-							headersDecode.add(pair.getKey() + " - " + unitResult.getName());
+						if (metricResult.hasDecode()) {
+							headersDecode.add(pair.getKey() + " - " + metricResult.getName());
+							rowDecodeMean.add(Formatters.seconds(metricResult.getMeanDecode()));
 						}
-
-						// means
-						if (count > 1) {
-							rowEncodeMean.add(Formatters.seconds(unitResult.getMeanEncode()));
-							rowDecodeMean.add(Formatters.seconds(unitResult.getMeanDecode()));
-						}
-
-						// sizes
-						rowSize.add(Formatters.bytes(unitResult.getSize()));
 					}
-
-					// times
-					int sizeEncode = unitResult.getTimeEncode().size();
+					int sizeEncode = metricResult.getTimeEncode().size();
 					if (sizeEncode > 0 && i < sizeEncode) {
-						rowEncode.add(Formatters.seconds(unitResult.getTimeEncode().get(i)));
+						rowEncode.add(Formatters.seconds(metricResult.getTimeEncode().get(i)));
 					}
-					int sizeDecode = unitResult.getTimeDecode().size();
+					int sizeDecode = metricResult.getTimeDecode().size();
 					if (sizeDecode > 0 && i < sizeDecode) {
-						rowDecode.add(Formatters.seconds(unitResult.getTimeDecode().get(i)));
+						rowDecode.add(Formatters.seconds(metricResult.getTimeDecode().get(i)));
 					}
 				}
 			}

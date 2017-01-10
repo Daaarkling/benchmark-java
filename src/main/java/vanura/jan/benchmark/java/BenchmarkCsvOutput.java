@@ -75,28 +75,24 @@ public class BenchmarkCsvOutput extends Benchmark {
 			Iterator it = result.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry)it.next();
-				// it.remove(); // avoids a ConcurrentModificationException
-				List<MetricResult> unitResults = (List<MetricResult>) pair.getValue();
-				for (MetricResult unitResult : unitResults) {
+				List<MetricResult> metricResults = (List<MetricResult>) pair.getValue();
+				for (MetricResult metricResult : metricResults) {
 					if (i == 0){
-						if (unitResult.hasEncode()) {
-							headersEncode.add(pair.getKey() + " - " + unitResult.getName());
+						if (metricResult.hasEncode()) {
+							headersEncode.add(pair.getKey() + " - " + metricResult.getName());
+							rowSize.add(Long.valueOf(metricResult.getSize()));
 						}
-						if (unitResult.hasDecode()) {
-							headersDecode.add(pair.getKey() + " - " + unitResult.getName());
-						}
-						
-						// sizes
-						rowSize.add(Long.valueOf(unitResult.getSize()));
-					}
-					
-					int sizeEncode = unitResult.getTimeEncode().size();
+						if (metricResult.hasDecode()) {
+							headersDecode.add(pair.getKey() + " - " + metricResult.getName());
+						}		
+					}					
+					int sizeEncode = metricResult.getTimeEncode().size();
 					if (sizeEncode > 0 && i < sizeEncode){
-						rowEncode.add(unitResult.getTimeEncode().get(i));
+						rowEncode.add(metricResult.getTimeEncode().get(i));
 					}
-					int sizeDecode = unitResult.getTimeDecode().size();
+					int sizeDecode = metricResult.getTimeDecode().size();
 					if (sizeDecode > 0 && i < sizeDecode) {
-						rowDecode.add(unitResult.getTimeDecode().get(i));
+						rowDecode.add(metricResult.getTimeDecode().get(i));
 					}
 				}
 			}

@@ -53,17 +53,17 @@ public abstract class Benchmark {
 				IMetric classUnit = (IMetric) ClassHelper.instantiateClass(className, IMetric.class);
 				
 				// run unit benchmark
-				MetricResult unitResult = classUnit.run(data, config.getTestData(), config.getRepetitions(), config.getMode());
+				MetricResult metricResult = classUnit.run(data, config.getTestData(), config.getRepetitions(), config.getMode());
 				
-				if (unitResult == null) {
+				if (metricResult == null) {
 					continue;
 				}
 				
 				String name = lib.path("name").asText() + " " + lib.path("version").asText();
 				name = name.trim();
-				unitResult.setName(name);
+				metricResult.setName(name);
 				
-				unitResults.add(unitResult);
+				unitResults.add(metricResult);
 			}
 			result.put(formatNode.getKey(), unitResults);
 		}
