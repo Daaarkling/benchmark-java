@@ -26,11 +26,8 @@
 package vanura.jan.benchmark.java.metrics.msgpack;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import vanura.jan.benchmark.java.entities.PersonCollection;
 import vanura.jan.benchmark.java.metrics.AMetric;
@@ -52,29 +49,17 @@ public class MsgPackMetric extends AMetric {
 
 		
 	@Override
-	public boolean encode(Object data, OutputStream output) {
-		
-		try {
-			objectMapper.writeValue(output, data);
-			return true;
-		} catch (IOException ex) {
-			Logger.getLogger(MsgPackMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return false;
-		}
-		
-		
+	public boolean encode(Object data, OutputStream output) throws Exception {
+
+		objectMapper.writeValue(output, data);
+		return true;
 	}
 	
 	
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
 		
-		try {
-			return objectMapper.readValue(input, PersonCollection.class);
-		} catch (IOException ex) {
-			Logger.getLogger(MsgPackMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
+		return objectMapper.readValue(input, PersonCollection.class);
 	}
 
 	

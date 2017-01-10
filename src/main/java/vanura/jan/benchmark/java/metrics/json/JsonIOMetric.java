@@ -22,7 +22,7 @@ public class JsonIOMetric extends AMetric {
 	
 	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
+	public boolean encode(Object data, OutputStream output) throws Exception {
 		
 		JsonWriter jsonWriter = new JsonWriter(output);
 		jsonWriter.write(data);
@@ -30,7 +30,7 @@ public class JsonIOMetric extends AMetric {
 	}
 
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
 		
 		PersonCollection personCollection = (PersonCollection) JsonReader.jsonToJava(input, null);
 		return personCollection;

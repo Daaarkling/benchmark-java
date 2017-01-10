@@ -25,14 +25,11 @@
  */
 package vanura.jan.benchmark.java.metrics.jnative;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import vanura.jan.benchmark.java.entities.PersonCollection;
 import vanura.jan.benchmark.java.metrics.AMetric;
 
 /**
@@ -42,30 +39,21 @@ import vanura.jan.benchmark.java.metrics.AMetric;
 public class JavaSerialization extends AMetric {
 	
 	
-
-
 	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
-		try {
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(output);
-			objectOutputStream.writeObject(data);
-			return true;
-		} catch (IOException ex) {
-			Logger.getLogger(JavaSerialization.class.getName()).log(Level.SEVERE, null, ex);
-			return false;
-		}
+	public boolean encode(Object data, OutputStream output) throws Exception {
+		
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(output);
+		objectOutputStream.writeObject(data);
+		return true;
 	}
 	
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
-		try {
-			ObjectInputStream inputStream = new ObjectInputStream(input);
-			return inputStream.readObject();
-		} catch (Exception ex) {
-			Logger.getLogger(JavaSerialization.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
+		
+		ObjectInputStream inputStream = new ObjectInputStream(input);
+		PersonCollection personCollection = (PersonCollection) inputStream.readObject();
+		return personCollection;
 	}
 	
 	

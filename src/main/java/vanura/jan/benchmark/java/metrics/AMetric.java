@@ -76,20 +76,25 @@ public abstract class AMetric implements IMetric {
 		Object decodeImplemented = null;
 		long start, time;
 		
-		// ENCODE
-		// Do it once to warm up.
-		encode(dataForEncode, output);
-	
-		for (int i = 1; i <= repetitions; i++) {
-			output.reset();
-			start = System.nanoTime();
-			encodeImplemented = encode(dataForEncode, output);
-			time = System.nanoTime() - start;
+		try {
+			// ENCODE
+			// Do it once to warm up.
+			encode(dataForEncode, output);
 
-			if (!encodeImplemented) {
-				break;
+			for (int i = 1; i <= repetitions; i++) {
+				output.reset();
+				start = System.nanoTime();
+				encodeImplemented = encode(dataForEncode, output);
+				time = System.nanoTime() - start;
+
+				if (!encodeImplemented) {
+					break;
+				}
+				result.addTimeEncode(time);
 			}
-			result.addTimeEncode(time);
+		} catch (Exception ex) {
+			Logger.getLogger(AMetric.class.getName()).log(Level.SEVERE, null, ex);
+			encodeImplemented = false;
 		}
 
 		// Size of string is always same (at least it should be), there is no need to repeat the process
@@ -104,22 +109,26 @@ public abstract class AMetric implements IMetric {
 		}
 		//output.close();
 		
-		
-		// DECODE
-		// Do it once to warm up.
-		decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
-		
-		for (int i = 1; i <= repetitions; i++) {
-			start = System.nanoTime();
-			decodeImplemented = decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
-			time = System.nanoTime() - start;
+		try {
+			// DECODE
+			// Do it once to warm up.
+			decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
 
-			if (decodeImplemented == null) {
-				break;
+			for (int i = 1; i <= repetitions; i++) {
+				start = System.nanoTime();
+				decodeImplemented = decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
+				time = System.nanoTime() - start;
+
+				if (decodeImplemented == null) {
+					break;
+				}
+				result.addTimeDecode(time);
 			}
-			result.addTimeDecode(time);
 		}
-
+		catch (Exception ex) {
+			Logger.getLogger(AMetric.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
 		return result;
 	}
 
@@ -137,46 +146,60 @@ public abstract class AMetric implements IMetric {
 		Object decodeImplemented = null;
 		long start, time;
 		
-		// ENCODE
-		// Do it once to warm up.
-		encode(dataForEncode, output);
-		output.reset();
-		
-		start = System.nanoTime();
-		for (int i = 1; i <= repetitions; i++) {
-			encodeImplemented = encode(dataForEncode, output);
-		}
-		time = System.nanoTime() - start;
-
-		if (encodeImplemented && output.size() > 0) {
-			result.addTimeEncode(time);
-			result.setSize(output.size());
-			
-			// Decode just one data not multiple data stacked on each other
-			output.reset();
+		try {
+			// ENCODE
+			// Do it once to warm up.
 			encode(dataForEncode, output);
-			dataForDecode = output.toByteArray();
-		} else {
+			output.reset();
+
+			start = System.nanoTime();
+			for (int i = 1; i <= repetitions; i++) {
+				encodeImplemented = encode(dataForEncode, output);
+			}
+			time = System.nanoTime() - start;
+
+			if (encodeImplemented && output.size() > 0) {
+				result.addTimeEncode(time);
+				result.setSize(output.size());
+
+				// Decode just one data not multiple data stacked on each other
+				output.reset();
+				encode(dataForEncode, output);
+				dataForDecode = output.toByteArray();
+			} else {
+				dataForDecode = prepareTestDataForDecode();
+				if (dataForDecode == null) {
+					return result;
+				}
+			}
+			output.close();
+			
+		} catch (Exception ex) {
+			Logger.getLogger(AMetric.class.getName()).log(Level.SEVERE, null, ex);
+			
 			dataForDecode = prepareTestDataForDecode();
 			if (dataForDecode == null) {
 				return result;
 			}
 		}
-		output.close();
 
 
-		// DECODE
-		// Do it once to warm up.
-		decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
-		
-		start = System.nanoTime();
-		for (int i = 1; i <= repetitions; i++) {
-			decodeImplemented = decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
-		}
-		time = System.nanoTime() - start;
-		
-		if (decodeImplemented != null) {
-			result.addTimeDecode(time);
+		try {
+			// DECODE
+			// Do it once to warm up.
+			decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
+
+			start = System.nanoTime();
+			for (int i = 1; i <= repetitions; i++) {
+				decodeImplemented = decode(new ByteArrayInputStream(dataForDecode), dataForDecode);
+			}
+			time = System.nanoTime() - start;
+
+			if (decodeImplemented != null) {
+				result.addTimeDecode(time);
+			}
+		} catch (Exception ex) {
+			Logger.getLogger(AMetric.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		
 		return result;
@@ -190,12 +213,12 @@ public abstract class AMetric implements IMetric {
 	}
 
 	@Override
-	public boolean encode(Object data, OutputStream output) {
+	public boolean encode(Object data, OutputStream output) throws Exception {
 		return false;
 	}
 
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
 		return null;
 	}
 	

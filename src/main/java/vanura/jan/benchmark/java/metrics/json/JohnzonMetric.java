@@ -18,14 +18,13 @@ import vanura.jan.benchmark.java.metrics.AMetric;
  * @author Jan
  */
 public class JohnzonMetric extends AMetric {
+	
 	private Mapper mapper;
 
 	
 	
-
 	@Override
 	protected void prepareBenchmark() {
-	
 		mapper = new MapperBuilder().build();
 	}
 	
@@ -33,14 +32,14 @@ public class JohnzonMetric extends AMetric {
 	
 	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
+	public boolean encode(Object data, OutputStream output) throws Exception {
 		
 		mapper.writeObject(data, output);
 		return true;
 	}
 
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
 		
 		PersonCollection personCollection = mapper.readObject(input, PersonCollection.class);
 		return personCollection;

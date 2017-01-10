@@ -22,12 +22,12 @@ public interface IMetric {
 	 * @param testData
 	 * @param testDataFile
 	 * @param repetitions
-	 * @param method 
+	 * @param mode 
 	 * @return object that holds results
 	 */
-	public MetricResult run(Object testData, File testDataFile, int repetitions, Config.Mode method);
+	public MetricResult run(Object testData, File testDataFile, int repetitions, Config.Mode mode);
 
-	public boolean encode(Object data, OutputStream output);
+	public boolean encode(Object data, OutputStream output) throws Exception;
 
-	public Object decode(InputStream input, byte[] bytes);
+	public Object decode(InputStream input, byte[] bytes) throws Exception;
 }

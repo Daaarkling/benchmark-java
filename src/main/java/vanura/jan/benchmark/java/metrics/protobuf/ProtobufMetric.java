@@ -25,11 +25,8 @@
  */
 package vanura.jan.benchmark.java.metrics.protobuf;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import vanura.jan.benchmark.java.converters.IDataConvertor;
 import vanura.jan.benchmark.java.converters.ProtobufConvertor;
 import vanura.jan.benchmark.java.metrics.AMetric;
@@ -51,29 +48,19 @@ public class ProtobufMetric extends AMetric {
 	
 	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
+	public boolean encode(Object data, OutputStream output) throws Exception {
 	
-		try {
-			PersonCollectionOuterClass.PersonCollection personCollection = (PersonCollectionOuterClass.PersonCollection) data;
-			personCollection.writeTo(output);
-			return true;
-		} catch (IOException ex) {
-			Logger.getLogger(ProtobufMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return false;
-		}
+		PersonCollectionOuterClass.PersonCollection personCollection = (PersonCollectionOuterClass.PersonCollection) data;
+		personCollection.writeTo(output);
+		return true;
 	}
 
 	
 	
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
 		
-		try {
-			PersonCollectionOuterClass.PersonCollection personCollection = PersonCollectionOuterClass.PersonCollection.parseFrom(input);
-			return personCollection;
-		} catch (IOException ex) {
-			Logger.getLogger(ProtobufMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
+		PersonCollectionOuterClass.PersonCollection personCollection = PersonCollectionOuterClass.PersonCollection.parseFrom(input);
+		return personCollection;
 	}
 }

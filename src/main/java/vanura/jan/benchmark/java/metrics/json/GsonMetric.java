@@ -28,13 +28,10 @@ package vanura.jan.benchmark.java.metrics.json;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import vanura.jan.benchmark.java.entities.PersonCollection;
 import vanura.jan.benchmark.java.metrics.AMetric;
 
@@ -55,30 +52,21 @@ public class GsonMetric extends AMetric {
 
 	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
-		
-		try {
-			JsonWriter writer =  new JsonWriter(new OutputStreamWriter(output));	
-			gson.toJson(data, PersonCollection.class, writer);
-			writer.close();
-			return true;
-		} catch (IOException ex) {
-			Logger.getLogger(GsonMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return false;
-		}
+	public boolean encode(Object data, OutputStream output) throws Exception {
+
+		JsonWriter writer =  new JsonWriter(new OutputStreamWriter(output));	
+		gson.toJson(data, PersonCollection.class, writer);
+		writer.close();
+		return true;
 	}
 
 	
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
-		try {
-			JsonReader reader = new JsonReader(new InputStreamReader(input));
-			PersonCollection pC = gson.fromJson(reader, PersonCollection.class);
-			reader.close();
-			return pC;
-		} catch (IOException ex) {
-			Logger.getLogger(GsonMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
+		
+		JsonReader reader = new JsonReader(new InputStreamReader(input));
+		PersonCollection pC = gson.fromJson(reader, PersonCollection.class);
+		reader.close();
+		return pC;
 	}
 }

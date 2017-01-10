@@ -53,14 +53,17 @@ public class XStreamMetric extends AMetric {
 	
 	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
+	public boolean encode(Object data, OutputStream output) throws Exception {
+		
 		xstream.toXML(data, output);
 		return true;
 	}
 
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
-		return (PersonCollection) xstream.fromXML(input);
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
+		
+		PersonCollection personCollection = (PersonCollection) xstream.fromXML(input);
+		return personCollection;
 	}
 	
 	

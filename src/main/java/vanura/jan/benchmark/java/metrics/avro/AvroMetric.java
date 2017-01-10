@@ -25,11 +25,8 @@
  */
 package vanura.jan.benchmark.java.metrics.avro;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.io.DatumReader;
@@ -56,7 +53,6 @@ public class AvroMetric extends AMetric {
 		
 		DatumWriter<PersonCollection> userDatumWriter = new SpecificDatumWriter<>(PersonCollection.class);
 		dataFileWriter = new DataFileWriter<>(userDatumWriter);
-		
 		datumReader = new SpecificDatumReader<>(PersonCollection.class);
 	}
 
@@ -69,34 +65,23 @@ public class AvroMetric extends AMetric {
 	
 	
 	
-	
-	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
+	public boolean encode(Object data, OutputStream output) throws Exception {
 		
-		try {
-			PersonCollection persons = (PersonCollection) data;
-			dataFileWriter.create(persons.getSchema(), output);
-			dataFileWriter.append(persons);
-			dataFileWriter.close();
-			return true;
-		} catch (IOException ex) {
-			Logger.getLogger(AvroMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return false;
-		}
+		PersonCollection persons = (PersonCollection) data;
+		dataFileWriter.create(persons.getSchema(), output);
+		dataFileWriter.append(persons);
+		dataFileWriter.close();
+		return true;
 	}
 
 	
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
 
-		try {
-			DataFileStream<PersonCollection> dataReader = new DataFileStream<>(input, datumReader);
-			return dataReader.next();
-		} catch (IOException ex) {
-			Logger.getLogger(AvroMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
+		DataFileStream<PersonCollection> dataReader = new DataFileStream<>(input, datumReader);
+		PersonCollection personCollection = dataReader.next();
+		return personCollection;
 	}
 
 	

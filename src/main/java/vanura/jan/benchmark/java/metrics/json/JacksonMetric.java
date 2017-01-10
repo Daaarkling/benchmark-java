@@ -6,11 +6,8 @@
 package vanura.jan.benchmark.java.metrics.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import vanura.jan.benchmark.java.entities.PersonCollection;
 import vanura.jan.benchmark.java.metrics.AMetric;
 
@@ -29,27 +26,17 @@ public class JacksonMetric extends AMetric {
 
 	
 	
-	
 	@Override
-	public boolean encode(Object data, OutputStream output) {
-		
-		try {
-			mapper.writeValue(output, data);
-			return true;
-		} catch (IOException ex) {
-			Logger.getLogger(JacksonMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return false;
-		}
+	public boolean encode(Object data, OutputStream output) throws Exception {
+
+		mapper.writeValue(output, data);
+		return true;
 	}
 
 	@Override
-	public Object decode(InputStream input, byte[] bytes) {
+	public Object decode(InputStream input, byte[] bytes) throws Exception {
 		
-		try {
-			return mapper.readValue(input, PersonCollection.class);
-		} catch (IOException ex) {
-			Logger.getLogger(JacksonMetric.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
-		}
+		PersonCollection personCollection = mapper.readValue(input, PersonCollection.class);
+		return personCollection;
 	}
 }
