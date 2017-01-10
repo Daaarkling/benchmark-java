@@ -62,6 +62,17 @@
 			"class": "vanura.jan.benchmark.java.metrics.xml.XStreamMetric",
 			"url": "https://github.com/x-stream/xstream",
 			"version": "1.4.9"
+		},
+		{
+			"name": "JAXB",
+			"class": "vanura.jan.benchmark.java.metrics.xml.JaxbMetric",
+			"url": "https://jaxb.java.net/"
+		},
+		{
+			"name": "Castor",
+			"class": "vanura.jan.benchmark.java.metrics.xml.CastorMetric",
+			"url": "https://github.com/castor-data-binding/castor",
+			"version": "1.4.1"
 		}
 	],
 	"msgpack": [

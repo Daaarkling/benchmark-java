@@ -146,6 +146,12 @@
 			<artifactId>dsl-json-processor</artifactId>
 			<version>1.4.3</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.castor/castor -->
+		<dependency>
+			<groupId>org.codehaus.castor</groupId>
+			<artifactId>castor-xml</artifactId>
+			<version>1.4.1</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
